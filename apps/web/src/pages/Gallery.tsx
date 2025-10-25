@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import ImageViewer from '../components/ImageViewer';
 
 const API_URL = 'http://localhost:3000';
 
@@ -10,8 +10,8 @@ interface Product {
   ts_description: string;
   cd_image_thumb: string;
   cd_image_full: string;
-  nu_width_px: number;
-  nu_height_px: number;
+  cd_width_cm: number;
+  cd_height_cm: number;
   nu_price: number;
   cd_type: 'original' | 'print';
   cd_technique: string;
@@ -23,7 +23,7 @@ const Gallery = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [filterType, setFilterType] = useState('all');
-  const navigate = useNavigate();
+  const [viewerIndex, setViewerIndex] = useState<number | null>(null);
 
   useEffect(() => {
     fetch(`${API_URL}/products`)
@@ -37,12 +37,6 @@ const Gallery = () => {
         setLoading(false);
       });
   }, []);
-
-  const getDimensions = (product: Product) => {
-    const width = (product.nu_width_px / 118).toFixed(0);
-    const height = (product.nu_height_px / 118).toFixed(0);
-    return `${width}×${height} cm`;
-  };
 
   const filteredArtworks = filterType === 'all' ? products : products.filter(art => art.cd_type === filterType);
 
@@ -85,8 +79,8 @@ const Gallery = () => {
           </div>
         ) : (
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '2rem' }}>
-            {filteredArtworks.map(artwork => (
-              <div key={artwork.id_product} onClick={() => navigate(`/galeria/${artwork.cd_slug}`)} style={{
+            {filteredArtworks.map((artwork, idx) => (
+              <div key={artwork.id_product} onClick={() => setViewerIndex(idx)} style={{
                 cursor: 'pointer', background: 'white', border: '1px solid #e0e0e0',
                 transition: 'transform 0.3s, box-shadow 0.3s', position: 'relative'
               }}>
@@ -118,7 +112,7 @@ const Gallery = () => {
                     {artwork.cd_name}
                   </h3>
                   <p className="sans-text" style={{ fontSize: '0.85rem', color: '#888', marginBottom: '1rem' }}>
-                    {getDimensions(artwork)} • {artwork.cd_type === 'original' ? 'Original' : 'Lámina'}
+                    {artwork.cd_width_cm} × {artwork.cd_height_cm} cm • {artwork.cd_type === 'original' ? 'Original' : 'Lámina'}
                   </p>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <span className="serif-title" style={{ fontSize: '1.5rem', fontWeight: '700', color: '#e74c3c' }}>{artwork.nu_price}€</span>
@@ -134,6 +128,15 @@ const Gallery = () => {
           </div>
         )}
       </div>
+
+      {/* Image Viewer */}
+      {viewerIndex !== null && (
+        <ImageViewer
+          products={filteredArtworks}
+          currentIndex={viewerIndex}
+          onClose={() => setViewerIndex(null)}
+        />
+      )}
     </section>
   );
 };

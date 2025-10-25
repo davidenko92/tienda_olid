@@ -12,8 +12,8 @@ CREATE TABLE products (
     ts_description TEXT,
     cd_image_thumb VARCHAR(500) NOT NULL,
     cd_image_full VARCHAR(500) NOT NULL,
-    nu_width_px INTEGER NOT NULL,
-    nu_height_px INTEGER NOT NULL,
+    cd_width_cm DECIMAL(10,1) NOT NULL,
+    cd_height_cm DECIMAL(10,1) NOT NULL,
     nu_price DECIMAL(10,2) DEFAULT 150.00,
     cd_type VARCHAR(20) DEFAULT 'original',
     cd_technique VARCHAR(255) DEFAULT 'Técnica mixta',
@@ -26,34 +26,34 @@ CREATE TABLE products (
 CREATE INDEX idx_products_slug ON products(cd_slug);
 
 -- Insertar datos con las imágenes reales subidas
-INSERT INTO products (cd_slug, cd_name, ts_description, cd_image_thumb, cd_image_full, nu_width_px, nu_height_px)
+INSERT INTO products (cd_slug, cd_name, ts_description, cd_image_thumb, cd_image_full, cd_width_cm, cd_height_cm)
 VALUES
 (
     'obra-111',
     'Obra de Arte 111',
-    'Obra de arte digitalizada en alta resolución (200 dpi). Imagen escaneada profesionalmente con dimensiones de 1173x1699 píxeles.',
+    'Obra de arte digitalizada en alta resolución (600 dpi). Imagen escaneada profesionalmente.',
     'images/thumbs/111.jpg',
     'images/originals/111.jpg',
-    1173,
-    1699
+    28.5,
+    40.5
 ),
 (
     'obra-112',
     'Obra de Arte 112',
-    'Obra de arte digitalizada en alta resolución (200 dpi). Imagen escaneada profesionalmente con dimensiones de 1175x1675 píxeles.',
+    'Obra de arte digitalizada en alta resolución (600 dpi). Imagen escaneada profesionalmente.',
     'images/thumbs/112.jpg',
     'images/originals/112.jpg',
-    1175,
-    1675
+    28.5,
+    40.5
 ),
 (
     'obra-119',
     'Obra de Arte 119',
-    'Obra de arte digitalizada en alta resolución (200 dpi). Imagen escaneada profesionalmente con dimensiones de 1162x1638 píxeles.',
+    'Obra de arte digitalizada en alta resolución (600 dpi). Imagen escaneada profesionalmente.',
     'images/thumbs/119.jpg',
     'images/originals/119.jpg',
-    1162,
-    1638
+    28.5,
+    40.5
 );
 
 -- Mostrar datos insertados

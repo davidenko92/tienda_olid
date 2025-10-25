@@ -22,9 +22,9 @@ export default function ProductCard({ product }: ProductCardProps) {
           loading="lazy"
         />
 
-        {/* Overlay con información de resolución */}
+        {/* Overlay con información de dimensiones */}
         <div className="absolute top-2 right-2 bg-black bg-opacity-70 text-white text-xs px-2 py-1 rounded">
-          {product.nu_width_px} × {product.nu_height_px}px
+          {product.cd_width_cm} × {product.cd_height_cm} cm
         </div>
       </div>
 

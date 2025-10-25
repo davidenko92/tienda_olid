@@ -66,8 +66,8 @@ const generateSQL = (imageData) => {
     '${imageData.description}',
     '${imageData.thumbPath}',
     '${imageData.originalPath}',
-    ${imageData.width},
-    ${imageData.height},
+    ${imageData.widthCm},
+    ${imageData.heightCm},
     ${imageData.price},
     '${imageData.type}',
     '${imageData.technique}',
@@ -113,11 +113,11 @@ const scanAndGenerate = () => {
       filename,
       slug: generateSlug(filename),
       name: generateName(filename),
-      description: `Obra de arte digitalizada en alta resolución (600 dpi). Imagen escaneada profesionalmente con dimensiones de ${dimensions.width}x${dimensions.height} píxeles.`,
+      description: `Obra de arte digitalizada en alta resolución (600 dpi). Imagen escaneada profesionalmente.`,
       thumbPath: `images/thumbs/${filename}`,
       originalPath: `images/originals/${filename}`,
-      width: dimensions.width,
-      height: dimensions.height,
+      widthCm: (dimensions.width / 236.22).toFixed(1),
+      heightCm: (dimensions.height / 236.22).toFixed(1),
       price: 150.00,
       type: 'original',
       technique: 'Técnica mixta',
@@ -127,7 +127,7 @@ const scanAndGenerate = () => {
     imageDataList.push(imageData);
 
     console.log(`✓ ${filename}`);
-    console.log(`  └─ ${dimensions.width}x${dimensions.height}px`);
+    console.log(`  └─ ${imageData.widthCm} × ${imageData.heightCm} cm`);
     console.log(`  └─ Slug: ${imageData.slug}\n`);
   });
 
@@ -150,7 +150,7 @@ const scanAndGenerate = () => {
 
   const sqlValues = imageDataList.map(data => generateSQL(data)).join(',\n');
 
-  const fullSQL = `INSERT INTO products (cd_slug, cd_name, ts_description, cd_image_thumb, cd_image_full, nu_width_px, nu_height_px, nu_price, cd_type, cd_technique, cd_status)
+  const fullSQL = `INSERT INTO products (cd_slug, cd_name, ts_description, cd_image_thumb, cd_image_full, cd_width_cm, cd_height_cm, nu_price, cd_type, cd_technique, cd_status)
 VALUES
 ${sqlValues};`;
 

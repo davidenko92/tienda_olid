@@ -9,8 +9,8 @@ export interface Product {
   ts_description: string;
   cd_image_thumb: string;
   cd_image_full: string;
-  nu_width_px: number;
-  nu_height_px: number;
+  cd_width_cm: number;
+  cd_height_cm: number;
   nu_price: number;
   cd_type: 'original' | 'print';
   cd_technique: string;
