@@ -1,0 +1,91 @@
+═══════════════════════════════════════════════════════════════
+  🖼️  D4IA GALLERY - INSTRUCCIONES PARA AGREGAR IMÁGENES
+═══════════════════════════════════════════════════════════════
+
+📌 PROCESO SIMPLIFICADO EN 3 PASOS:
+
+┌─────────────────────────────────────────────────────────────┐
+│ PASO 1: Preparar tus imágenes                               │
+└─────────────────────────────────────────────────────────────┘
+
+  • Solo necesitas las imágenes ORIGINALES (alta resolución)
+  • Los thumbnails se generan AUTOMÁTICAMENTE ⚡
+  • Formatos soportados: JPG, JPEG, PNG, WEBP
+  • Cualquier nombre de archivo funciona
+
+
+┌─────────────────────────────────────────────────────────────┐
+│ PASO 2: Copiar imágenes a la carpeta de originales         │
+└─────────────────────────────────────────────────────────────┘
+
+  • Copia TODAS tus imágenes originales a:
+    📁 data\images\originals\
+
+  • Ejemplo de nombres válidos:
+    ✓ WhatsApp Image 2025-10-25 at 14.18.29.jpeg
+    ✓ mi-cuadro.jpg
+    ✓ obra-123.png
+    ✓ cualquier-nombre.jpeg
+
+
+┌─────────────────────────────────────────────────────────────┐
+│ PASO 3: Ejecutar el generador automático                   │
+└─────────────────────────────────────────────────────────────┘
+
+  • Haz DOBLE CLIC en el archivo:
+    📄 generar-sql.bat
+
+  • El script hará TODO automáticamente:
+    [1/2] ⚡ Genera thumbnails optimizados (~87% reducción)
+    [2/2] 📋 Genera el SQL para la base de datos
+
+  • Verás el SQL en pantalla
+  • También se guarda en: data\db\generated-inserts.sql
+
+
+┌─────────────────────────────────────────────────────────────┐
+│ PASO 4: Ejecutar el SQL en pgAdmin                         │
+└─────────────────────────────────────────────────────────────┘
+
+  1. Abre pgAdmin
+  2. Navega a tu base de datos "tienda_d4ia"
+  3. Click derecho → Query Tool
+  4. Copia el SQL generado y pégalo
+  5. Click en el botón ▶️ "Execute"
+  6. ¡Listo! Ve a http://localhost:5173 y verás tus imágenes
+
+
+═══════════════════════════════════════════════════════════════
+
+⚡ RESUMEN SÚPER RÁPIDO:
+
+  1. Copia imágenes → data\images\originals\
+  2. Doble clic en generar-sql.bat
+  3. Copia el SQL
+  4. Pégalo en pgAdmin y ejecuta
+  5. ¡Disfruta tu galería! 🎨
+
+═══════════════════════════════════════════════════════════════
+
+✨ VENTAJAS DEL SISTEMA AUTOMÁTICO:
+
+  • NO necesitas crear thumbnails manualmente
+  • NO necesitas renombrar archivos
+  • NO necesitas escribir SQL a mano
+  • Los thumbnails se optimizan automáticamente (87% más pequeños)
+  • Carga súper rápida en el navegador
+  • Todo es automático - solo copia y ejecuta
+
+═══════════════════════════════════════════════════════════════
+
+⚠️  NOTAS IMPORTANTES:
+
+  • Si ejecutas el .bat dos veces, los thumbnails existentes NO se
+    sobrescriben (se omiten automáticamente)
+
+  • El script lee las dimensiones reales de cada imagen
+
+  • Puedes agregar más imágenes en cualquier momento, solo repite
+    el proceso
+
+═══════════════════════════════════════════════════════════════

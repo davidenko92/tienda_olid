@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: d4ia-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: d4ia
+      POSTGRES_PASSWORD: clave_segura
+      POSTGRES_DB: tienda_d4ia
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./data/db/postgres-data:/var/lib/postgresql/data
+      - ./data/db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U d4ia -d tienda_d4ia"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
