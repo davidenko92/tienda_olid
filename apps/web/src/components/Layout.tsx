@@ -56,21 +56,6 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
       <main style={{ flex: 1 }}>
         {children}
       </main>
-
-      {/* Footer */}
-      <footer style={{ background: '#2c2c2c', color: 'white', padding: '3rem 2rem 2rem', textAlign: 'center' }}>
-        <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
-          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1.5rem' }}>
-            <img src="/olid_art.png" alt="OLID ART" style={{ height: '90px', width: 'auto', filter: 'brightness(0) invert(1)' }} />
-          </div>
-          <p className="sans-text" style={{ fontSize: '0.9rem', color: '#aaa', marginBottom: '2rem' }}>
-            Arte que sana • Fabricado en España con amor
-          </p>
-          <div style={{ borderTop: '1px solid #444', paddingTop: '1.5rem', marginTop: '2rem' }}>
-            <p className="sans-text" style={{ fontSize: '0.85rem', color: '#888' }}>© 2025 OLID ART. Todos los derechos reservados.</p>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 };

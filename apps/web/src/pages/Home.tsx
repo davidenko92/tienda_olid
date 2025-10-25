@@ -1,27 +1,97 @@
-import { Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+
+const API_URL = 'http://localhost:3000';
+
+interface Product {
+  id_product: number;
+  cd_image_full: string;
+}
 
 const Home = () => {
-  return (
-    <section style={{ padding: '0', background: '#f9f9f9' }}>
-      <div style={{ position: 'relative', height: '90vh', background: '#f5f5f5', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <div style={{ textAlign: 'center', maxWidth: '800px', padding: '0 2rem' }}>
-          <h1 className="serif-title" style={{ fontSize: '4rem', fontWeight: '700', color: '#333', marginBottom: '1.5rem', lineHeight: 1.2 }}>
-            Arte que sana
-          </h1>
-          <p className="sans-text" style={{ fontSize: '1.3rem', color: '#666', marginBottom: '3rem', lineHeight: 1.6 }}>
-            Descubre piezas únicas creadas con pasión y dedicación. Cada obra cuenta una historia de amor por el arte.
-          </p>
-          <Link to="/galeria" className="sans-text" style={{
-            display: 'inline-block',
-            padding: '1rem 2.5rem', fontSize: '0.95rem', fontWeight: '600',
-            background: '#e74c3c', color: 'white', border: 'none',
-            cursor: 'pointer', textTransform: 'uppercase', letterSpacing: '0.05em',
-            textDecoration: 'none',
-            transition: 'all 0.3s'
-          }}>
-            Explorar Galería
-          </Link>
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [heroImages, setHeroImages] = useState<string[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch 3 random products on component mount
+  useEffect(() => {
+    fetch(`${API_URL}/products`)
+      .then(res => res.json())
+      .then(data => {
+        // Shuffle and select 3 random products
+        const shuffled = [...data].sort(() => 0.5 - Math.random());
+        const selected = shuffled.slice(0, 3);
+        const imageUrls = selected.map((p: Product) => `${API_URL}/${p.cd_image_full}`);
+        setHeroImages(imageUrls);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error('Error loading products:', err);
+        setLoading(false);
+      });
+  }, []);
+
+  // Auto-advance carousel every 5 seconds
+  useEffect(() => {
+    if (heroImages.length === 0) return;
+
+    const interval = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % heroImages.length);
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [heroImages.length]);
+
+  if (loading) {
+    return (
+      <section style={{ padding: '0', background: '#fff' }}>
+        <div style={{
+          width: '100%',
+          height: '70vh',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          background: '#f5f5f5'
+        }}>
+          <p style={{ color: '#666' }}>Cargando...</p>
         </div>
+      </section>
+    );
+  }
+
+  return (
+    <section style={{ padding: '0', background: '#fff' }}>
+      {/* Minimalist Image Carousel - 3 random images from database */}
+      <div style={{
+        position: 'relative',
+        width: '100%',
+        height: '70vh',
+        overflow: 'hidden'
+      }}>
+        {heroImages.map((image, index) => (
+          <div
+            key={index}
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              opacity: currentSlide === index ? 1 : 0,
+              transition: 'opacity 1.5s ease-in-out'
+            }}
+          >
+            <img
+              src={image}
+              alt=""
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+                objectPosition: 'center'
+              }}
+            />
+          </div>
+        ))}
       </div>
     </section>
   );
