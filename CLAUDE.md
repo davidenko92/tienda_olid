@@ -82,11 +82,24 @@ npm run lint      # Run ESLint
 
 ## Testing the Application
 
+### Local Development
 1. Ensure PostgreSQL is running: `docker compose up -d`
 2. Initialize database: `cd apps/api && npm run db:init`
 3. Start backend: `npm run dev` (from apps/api)
 4. Start frontend: `npm run dev` (from apps/web)
 5. Visit `http://localhost:5173`
+
+### Production Deployment
+1. **With Traefik + Docker** (recommended for VPS):
+   - See `DEPLOY-TRAEFIK.md` for complete guide
+   - Uses `docker-compose.prod.yml` with Traefik labels
+   - Backend and frontend run in Docker containers
+   - Images served from `/var/www/html/images/` mounted as volume
+
+2. **With Nginx + PM2** (traditional):
+   - See `DEPLOY.md` for complete guide
+   - Backend runs with PM2, frontend served by Nginx
+   - Requires manual Nginx configuration
 
 ## Important File Locations
 
