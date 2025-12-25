@@ -5,6 +5,8 @@ services:
   api:
     build: .
     container_name: d4ia-api
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     restart: unless-stopped
     environment:
       - DATABASE_URL=${DATABASE_URL}
@@ -21,12 +23,12 @@ services:
     labels:
       # Habilitar Traefik
       - "traefik.enable=true"
-      - "traefik.docker.network=traefik"
+      - "traefik.docker.network=root_default"
 
       # Configuración HTTP para la API
-      - "traefik.http.routers.d4ia-api.rule=Host(`148.230.117.58`) && PathPrefix(`/api`)"
+      - "traefik.http.routers.d4ia-api.rule=PathPrefix(`/api`)"
       - "traefik.http.routers.d4ia-api.entrypoints=web"
-      - "traefik.http.routers.d4ia-api.priority=10"
+      - "traefik.http.routers.d4ia-api.priority=100"
       - "traefik.http.services.d4ia-api.loadbalancer.server.port=3000"
 
       # Middleware para quitar el prefijo /api
@@ -34,9 +36,9 @@ services:
       - "traefik.http.routers.d4ia-api.middlewares=d4ia-api-stripprefix"
 
       # Ruta para servir imágenes directamente desde el backend
-      - "traefik.http.routers.d4ia-images.rule=Host(`148.230.117.58`) && PathPrefix(`/images`)"
+      - "traefik.http.routers.d4ia-images.rule=PathPrefix(`/images`)"
       - "traefik.http.routers.d4ia-images.entrypoints=web"
-      - "traefik.http.routers.d4ia-images.priority=9"
+      - "traefik.http.routers.d4ia-images.priority=99"
       - "traefik.http.routers.d4ia-images.service=d4ia-api"
 
   # Servidor web estático para el frontend (Nginx simple)
@@ -51,8 +53,8 @@ services:
       - traefik
     labels:
       - "traefik.enable=true"
-      - "traefik.docker.network=traefik"
-      - "traefik.http.routers.d4ia-web.rule=Host(`148.230.117.58`)"
+      - "traefik.docker.network=root_default"
+      - "traefik.http.routers.d4ia-web.rule=PathPrefix(`/`)"
       - "traefik.http.routers.d4ia-web.entrypoints=web"
       - "traefik.http.services.d4ia-web.loadbalancer.server.port=80"
       # Prioridad más baja que la API para que /api e /images tengan precedencia
