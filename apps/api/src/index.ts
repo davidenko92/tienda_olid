@@ -40,8 +40,10 @@ await fastify.register(fastifyCors, {
 });
 
 // Servir archivos estáticos (imágenes)
+// En producción, usar IMAGES_PATH del .env, en desarrollo usar ./data/images
+const imagesPath = process.env.IMAGES_PATH || join(rootDir, 'data', 'images');
 await fastify.register(fastifyStatic, {
-  root: join(rootDir, 'data', 'images'),
+  root: imagesPath,
   prefix: '/images/',
   decorateReply: false,
 });

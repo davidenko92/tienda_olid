@@ -20,7 +20,7 @@ interface ImageViewerProps {
   onClose: () => void;
 }
 
-const API_URL = 'http://localhost:3000';
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
 export default function ImageViewer({ products, currentIndex, onClose }: ImageViewerProps) {
   const [index, setIndex] = useState(currentIndex);
