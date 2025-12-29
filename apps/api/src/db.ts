@@ -8,11 +8,14 @@ import dotenv from 'dotenv';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 
-// Cargar variables de entorno desde la raíz del proyecto
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-const rootDir = join(__dirname, '..', '..', '..');
-dotenv.config({ path: join(rootDir, '.env') });
+// Cargar variables de entorno desde la raíz del proyecto solo en desarrollo
+// En producción (Docker), las variables ya están inyectadas por docker-compose
+if (process.env.NODE_ENV !== 'production') {
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = dirname(__filename);
+  const rootDir = join(__dirname, '..', '..', '..');
+  dotenv.config({ path: join(rootDir, '.env') });
+}
 
 const { Pool } = pg;
 

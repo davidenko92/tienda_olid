@@ -20,7 +20,7 @@ interface ImageViewerProps {
   onClose: () => void;
 }
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+const IMAGES_URL = import.meta.env.VITE_IMAGES_URL || 'http://localhost:3000';
 
 export default function ImageViewer({ products, currentIndex, onClose }: ImageViewerProps) {
   const [index, setIndex] = useState(currentIndex);
@@ -204,7 +204,7 @@ export default function ImageViewer({ products, currentIndex, onClose }: ImageVi
             <div style={{ color: '#999', fontSize: '1rem' }}>Cargando imagen...</div>
           )}
           <img
-            src={`${API_URL}/${product.cd_image_full}`}
+            src={`${IMAGES_URL}/${product.cd_image_full}`}
             alt={product.cd_name}
             style={{
               maxWidth: '100%',

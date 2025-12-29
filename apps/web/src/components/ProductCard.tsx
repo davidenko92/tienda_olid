@@ -5,7 +5,7 @@ interface ProductCardProps {
   product: Product;
 }
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+const IMAGES_BASE_URL = import.meta.env.VITE_IMAGES_URL || 'http://localhost:3000';
 
 export default function ProductCard({ product }: ProductCardProps) {
   return (
@@ -16,7 +16,7 @@ export default function ProductCard({ product }: ProductCardProps) {
       {/* Contenedor de imagen con aspect ratio */}
       <div className="relative aspect-[4/3] bg-gray-100 overflow-hidden">
         <img
-          src={`${API_BASE_URL}/${product.cd_image_thumb}`}
+          src={`${IMAGES_BASE_URL}/${product.cd_image_thumb}`}
           alt={product.cd_name}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           loading="lazy"

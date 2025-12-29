@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import ImageViewer from '../components/ImageViewer';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+const IMAGES_URL = import.meta.env.VITE_IMAGES_URL || 'http://localhost:3000';
 
 interface Product {
   id_product: number;
@@ -86,7 +87,7 @@ const Gallery = () => {
               }}>
                 <div style={{ position: 'relative', paddingTop: '100%', background: '#f5f5f5', overflow: 'hidden' }}>
                   <img
-                    src={`${API_URL}/${artwork.cd_image_thumb}`}
+                    src={`${IMAGES_URL}/${artwork.cd_image_thumb}`}
                     alt={artwork.cd_name}
                     style={{
                       position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover'

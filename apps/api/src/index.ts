@@ -21,16 +21,7 @@ dotenv.config({ path: join(rootDir, '.env') });
 
 // Inicializar Fastify con logging
 const fastify = Fastify({
-  logger: {
-    level: 'info',
-    transport: {
-      target: 'pino-pretty',
-      options: {
-        translateTime: 'HH:MM:ss Z',
-        ignore: 'pid,hostname',
-      },
-    },
-  },
+  logger: true
 });
 
 // Configurar CORS
@@ -160,7 +151,7 @@ const start = async () => {
     console.log('║   🎨 D4IA Gallery API Server          ║');
     console.log('╠════════════════════════════════════════╣');
     console.log(`║   🚀 Server: http://localhost:${PORT}    ║`);
-    console.log(`║   🗄️  Database: tienda_d4ia            ║`);
+    console.log(`║   🗄️  Database: tienda                 ║`);
     console.log(`║   📁 Images: /images/*                 ║`);
     console.log('╚════════════════════════════════════════╝\n');
 
