@@ -1,15 +1,45 @@
 import { useState } from 'react';
 import { Mail, Instagram } from 'lucide-react';
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+
 const Contact = () => {
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
   const [formStatus, setFormStatus] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Aquí iría la lógica de envío del formulario
-    setFormStatus('¡Mensaje enviado! Te responderé pronto.');
-    setFormData({ name: '', email: '', message: '' });
+    setIsSubmitting(true);
+    setFormStatus('');
+
+    try {
+      const response = await fetch(`${API_URL}/contact`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Error al enviar el mensaje');
+      }
+
+      setFormStatus(data.message || '¡Mensaje enviado! Te responderé pronto.');
+      setFormData({ name: '', email: '', message: '' });
+    } catch (error) {
+      console.error('Error al enviar formulario:', error);
+      setFormStatus(
+        error instanceof Error
+          ? error.message
+          : 'Error al enviar el mensaje. Por favor, inténtalo de nuevo.'
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -67,16 +97,31 @@ const Contact = () => {
                   width: '100%', padding: '0.75rem', fontSize: '1rem', border: '1px solid #ddd', borderRadius: '4px', resize: 'vertical'
                 }} required />
               </div>
-              <button type="submit" className="sans-text" style={{
-                padding: '0.9rem 2rem', fontSize: '0.95rem', fontWeight: '600',
-                background: '#e74c3c', color: 'white', border: 'none',
-                cursor: 'pointer', textTransform: 'uppercase', letterSpacing: '0.05em',
-                transition: 'all 0.3s'
-              }}>
-                Enviar Mensaje
+              <button
+                type="submit"
+                className="sans-text"
+                disabled={isSubmitting}
+                style={{
+                  padding: '0.9rem 2rem',
+                  fontSize: '0.95rem',
+                  fontWeight: '600',
+                  background: isSubmitting ? '#ccc' : '#e74c3c',
+                  color: 'white',
+                  border: 'none',
+                  cursor: isSubmitting ? 'not-allowed' : 'pointer',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.05em',
+                  transition: 'all 0.3s'
+                }}
+              >
+                {isSubmitting ? 'Enviando...' : 'Enviar Mensaje'}
               </button>
               {formStatus && (
-                <p className="sans-text" style={{ fontSize: '0.9rem', color: '#27ae60', textAlign: 'center' }}>
+                <p className="sans-text" style={{
+                  fontSize: '0.9rem',
+                  color: formStatus.includes('Error') || formStatus.includes('error') ? '#e74c3c' : '#27ae60',
+                  textAlign: 'center'
+                }}>
                   {formStatus}
                 </p>
               )}

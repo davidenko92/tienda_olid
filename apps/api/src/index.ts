@@ -10,6 +10,7 @@ import dotenv from 'dotenv';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import { query } from './db.js';
+import { sendContactEmail } from './mailer.js';
 
 // Configuración de rutas
 const __filename = fileURLToPath(import.meta.url);
@@ -134,6 +135,46 @@ fastify.get<{
     fastify.log.error(error);
     reply.status(500);
     return { error: 'Error al obtener el producto' };
+  }
+});
+
+/**
+ * POST /contact
+ * Envía un email de contacto desde el formulario web
+ */
+fastify.post<{
+  Body: { name: string; email: string; message: string };
+  Reply: { success: boolean; message: string } | { error: string };
+}>('/contact', async (request, reply) => {
+  try {
+    const { name, email, message } = request.body;
+
+    // Validar datos
+    if (!name || !email || !message) {
+      reply.status(400);
+      return { error: 'Todos los campos son obligatorios' };
+    }
+
+    // Validar formato de email básico
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      reply.status(400);
+      return { error: 'El email no tiene un formato válido' };
+    }
+
+    // Enviar email
+    await sendContactEmail(name, email, message);
+
+    fastify.log.info(`Email de contacto enviado desde: ${email}`);
+
+    return {
+      success: true,
+      message: 'Mensaje enviado correctamente. Te responderemos pronto.'
+    };
+  } catch (error) {
+    fastify.log.error(error, 'Error al enviar email de contacto');
+    reply.status(500);
+    return { error: 'Error al enviar el mensaje. Por favor, inténtalo de nuevo más tarde.' };
   }
 });
 

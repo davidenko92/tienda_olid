@@ -14,6 +14,9 @@ services:
       - IMAGES_PATH=/images
       - FRONTEND_URL=http://148.230.117.58
       - NODE_ENV=production
+      - EMAIL_USER=${EMAIL_USER}
+      - EMAIL_PASS=${EMAIL_PASS}
+      - EMAIL_TO=${EMAIL_TO}
     volumes:
       - /var/www/html/images:/images:ro
     networks:
