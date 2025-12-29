@@ -15,33 +15,31 @@ services:
       - FRONTEND_URL=http://148.230.117.58
       - NODE_ENV=production
     volumes:
-      # Montar las imágenes desde el host
       - /var/www/html/images:/images:ro
     networks:
       - traefik
       - internal
     labels:
-      # Habilitar Traefik
       - "traefik.enable=true"
       - "traefik.docker.network=root_default"
 
-      # Configuración HTTP para la API
+      # API (HTTPS)
       - "traefik.http.routers.d4ia-api.rule=PathPrefix(`/api`)"
-      - "traefik.http.routers.d4ia-api.entrypoints=web"
+      - "traefik.http.routers.d4ia-api.entrypoints=websecure"
+      - "traefik.http.routers.d4ia-api.tls=true"
       - "traefik.http.routers.d4ia-api.priority=100"
       - "traefik.http.services.d4ia-api.loadbalancer.server.port=3000"
-
-      # Middleware para quitar el prefijo /api
       - "traefik.http.middlewares.d4ia-api-stripprefix.stripprefix.prefixes=/api"
       - "traefik.http.routers.d4ia-api.middlewares=d4ia-api-stripprefix"
 
-      # Ruta para servir imágenes directamente desde el backend
+      # IMAGES (HTTPS) -> mismo servicio (api) pero sin strip
       - "traefik.http.routers.d4ia-images.rule=PathPrefix(`/images`)"
-      - "traefik.http.routers.d4ia-images.entrypoints=web"
-      - "traefik.http.routers.d4ia-images.priority=99"
+      - "traefik.http.routers.d4ia-images.entrypoints=websecure"
+      - "traefik.http.routers.d4ia-images.tls=true"
+      - "traefik.http.routers.d4ia-images.priority=90"
       - "traefik.http.routers.d4ia-images.service=d4ia-api"
 
-  # Servidor web estático para el frontend (Nginx simple)
+  # Servidor web estático
   web:
     image: nginx:alpine
     container_name: d4ia-web
@@ -54,14 +52,17 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=root_default"
+
+      # WEB (HTTPS)
       - "traefik.http.routers.d4ia-web.rule=PathPrefix(`/`)"
-      - "traefik.http.routers.d4ia-web.entrypoints=web"
-      - "traefik.http.services.d4ia-web.loadbalancer.server.port=80"
-      # Prioridad más baja que la API para que /api e /images tengan precedencia
+      - "traefik.http.routers.d4ia-web.entrypoints=websecure"
+      - "traefik.http.routers.d4ia-web.tls=true"
       - "traefik.http.routers.d4ia-web.priority=1"
+      - "traefik.http.services.d4ia-web.loadbalancer.server.port=80"
 
 networks:
   traefik:
     external: true
+    name: root_default
   internal:
     driver: bridge
