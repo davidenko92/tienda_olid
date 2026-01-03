@@ -12,7 +12,7 @@ services:
       - DATABASE_URL=${DATABASE_URL}
       - PORT=3000
       - IMAGES_PATH=/images
-      - FRONTEND_URL=http://148.230.117.58
+      - FRONTEND_URL=https://olid.store
       - NODE_ENV=production
       - EMAIL_USER=${EMAIL_USER}
       - EMAIL_PASS=${EMAIL_PASS}
@@ -27,18 +27,20 @@ services:
       - "traefik.docker.network=root_default"
 
       # API (HTTPS)
-      - "traefik.http.routers.d4ia-api.rule=PathPrefix(`/api`)"
+      - "traefik.http.routers.d4ia-api.rule=Host(`olid.store`) && PathPrefix(`/api`)"
       - "traefik.http.routers.d4ia-api.entrypoints=websecure"
       - "traefik.http.routers.d4ia-api.tls=true"
+      - "traefik.http.routers.d4ia-api.tls.certresolver=mytlschallenge"
       - "traefik.http.routers.d4ia-api.priority=100"
       - "traefik.http.services.d4ia-api.loadbalancer.server.port=3000"
       - "traefik.http.middlewares.d4ia-api-stripprefix.stripprefix.prefixes=/api"
       - "traefik.http.routers.d4ia-api.middlewares=d4ia-api-stripprefix"
 
       # IMAGES (HTTPS) -> mismo servicio (api) pero sin strip
-      - "traefik.http.routers.d4ia-images.rule=PathPrefix(`/images`)"
+      - "traefik.http.routers.d4ia-images.rule=Host(`olid.store`) && PathPrefix(`/images`)"
       - "traefik.http.routers.d4ia-images.entrypoints=websecure"
       - "traefik.http.routers.d4ia-images.tls=true"
+      - "traefik.http.routers.d4ia-images.tls.certresolver=mytlschallenge"
       - "traefik.http.routers.d4ia-images.priority=90"
       - "traefik.http.routers.d4ia-images.service=d4ia-api"
 
@@ -57,9 +59,10 @@ services:
       - "traefik.docker.network=root_default"
 
       # WEB (HTTPS)
-      - "traefik.http.routers.d4ia-web.rule=PathPrefix(`/`)"
+      - "traefik.http.routers.d4ia-web.rule=Host(`olid.store`) || Host(`www.olid.store`)"
       - "traefik.http.routers.d4ia-web.entrypoints=websecure"
       - "traefik.http.routers.d4ia-web.tls=true"
+      - "traefik.http.routers.d4ia-web.tls.certresolver=mytlschallenge"
       - "traefik.http.routers.d4ia-web.priority=1"
       - "traefik.http.services.d4ia-web.loadbalancer.server.port=80"
 
