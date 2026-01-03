@@ -39,12 +39,43 @@ const Gallery = () => {
       });
   }, []);
 
-  // Agrupar productos por técnica
-  const techniques = ['Acuarela', 'Óleo', 'Acrílico', 'Técnica mixta'];
-  const productsByTechnique = techniques.map(technique => ({
-    technique,
-    products: products.filter(p => p.cd_technique === technique)
-  })).filter(group => group.products.length > 0);
+  // Función para categorizar técnica basándose en palabras clave
+  const categorizeTechnique = (techniqueText: string): string => {
+    const normalized = techniqueText.toUpperCase();
+
+    if (normalized.includes('ACUARELA')) return 'Acuarela';
+    if (normalized.includes('OLEO') || normalized.includes('ÓLEO')) return 'Óleo';
+    if (normalized.includes('ACRILICO') || normalized.includes('ACRÍLICO')) return 'Acrílico';
+    if (normalized.includes('MIXTA')) return 'Técnica mixta';
+
+    // Si no coincide con ninguna categoría, usar el texto original
+    return techniqueText;
+  };
+
+  // Agrupar productos por técnica categorizada
+  const productsByTechnique = products.reduce((acc, product) => {
+    const category = categorizeTechnique(product.cd_technique);
+
+    if (!acc[category]) {
+      acc[category] = [];
+    }
+    acc[category].push(product);
+
+    return acc;
+  }, {} as Record<string, Product[]>);
+
+  // Convertir a array y ordenar por técnica
+  const techniqueOrder = ['Acuarela', 'Óleo', 'Acrílico', 'Técnica mixta'];
+  const sortedTechniques = Object.entries(productsByTechnique).sort((a, b) => {
+    const indexA = techniqueOrder.indexOf(a[0]);
+    const indexB = techniqueOrder.indexOf(b[0]);
+
+    if (indexA === -1 && indexB === -1) return a[0].localeCompare(b[0]);
+    if (indexA === -1) return 1;
+    if (indexB === -1) return -1;
+
+    return indexA - indexB;
+  });
 
   return (
     <section style={{ padding: '4rem 2rem', background: '#f9f9f9', minHeight: 'calc(100vh - 400px)' }}>
@@ -63,8 +94,8 @@ const Gallery = () => {
         ) : (
           <>
             {/* Secciones por técnica */}
-            {productsByTechnique.map((group) => (
-              <div key={group.technique} style={{ marginBottom: '5rem' }}>
+            {sortedTechniques.map(([technique, techniqueProducts]) => (
+              <div key={technique} style={{ marginBottom: '5rem' }}>
                 {/* Título de la sección */}
                 <h3 className="serif-title" style={{
                   fontSize: '2rem',
@@ -74,16 +105,16 @@ const Gallery = () => {
                   borderBottom: '2px solid #e74c3c',
                   paddingBottom: '0.5rem'
                 }}>
-                  {group.technique}
+                  {technique}
                 </h3>
 
                 {/* Grid de productos */}
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '2rem' }}>
-                  {group.products.map((artwork) => (
+                  {techniqueProducts.map((artwork) => (
                     <div key={artwork.id_product} onClick={() => {
-                      const idx = group.products.findIndex(p => p.id_product === artwork.id_product);
+                      const idx = techniqueProducts.findIndex(p => p.id_product === artwork.id_product);
                       setViewerIndex(idx);
-                      setViewerTechnique(group.technique);
+                      setViewerTechnique(technique);
                     }} style={{
                       cursor: 'pointer', background: 'white', border: '1px solid #e0e0e0',
                       transition: 'transform 0.3s, box-shadow 0.3s', position: 'relative'
@@ -138,7 +169,7 @@ const Gallery = () => {
       {/* Image Viewer */}
       {viewerIndex !== null && viewerTechnique && (
         <ImageViewer
-          products={productsByTechnique.find(g => g.technique === viewerTechnique)?.products || []}
+          products={productsByTechnique[viewerTechnique] || []}
           currentIndex={viewerIndex}
           onClose={() => {
             setViewerIndex(null);
