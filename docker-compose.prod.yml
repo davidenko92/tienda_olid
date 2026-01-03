@@ -26,8 +26,8 @@ services:
       - "traefik.enable=true"
       - "traefik.docker.network=root_default"
 
-      # API (HTTPS) - Acepta tanto dominio como IP
-      - "traefik.http.routers.d4ia-api.rule=(Host(`olidart.store`) || Host(`www.olidart.store`) || Host(`148.230.117.58`)) && PathPrefix(`/api`)"
+      # API (HTTPS) - Solo dominios con SSL
+      - "traefik.http.routers.d4ia-api.rule=(Host(`olidart.store`) || Host(`www.olidart.store`)) && PathPrefix(`/api`)"
       - "traefik.http.routers.d4ia-api.entrypoints=websecure"
       - "traefik.http.routers.d4ia-api.tls=true"
       - "traefik.http.routers.d4ia-api.tls.certresolver=mytlschallenge"
@@ -36,13 +36,27 @@ services:
       - "traefik.http.middlewares.d4ia-api-stripprefix.stripprefix.prefixes=/api"
       - "traefik.http.routers.d4ia-api.middlewares=d4ia-api-stripprefix"
 
-      # IMAGES (HTTPS) -> mismo servicio (api) pero sin strip
-      - "traefik.http.routers.d4ia-images.rule=(Host(`olidart.store`) || Host(`www.olidart.store`) || Host(`148.230.117.58`)) && PathPrefix(`/images`)"
+      # API por IP (HTTPS sin certificado automático)
+      - "traefik.http.routers.d4ia-api-ip.rule=Host(`148.230.117.58`) && PathPrefix(`/api`)"
+      - "traefik.http.routers.d4ia-api-ip.entrypoints=websecure"
+      - "traefik.http.routers.d4ia-api-ip.tls=true"
+      - "traefik.http.routers.d4ia-api-ip.priority=100"
+      - "traefik.http.routers.d4ia-api-ip.middlewares=d4ia-api-stripprefix"
+
+      # IMAGES (HTTPS) - Solo dominios con SSL
+      - "traefik.http.routers.d4ia-images.rule=(Host(`olidart.store`) || Host(`www.olidart.store`)) && PathPrefix(`/images`)"
       - "traefik.http.routers.d4ia-images.entrypoints=websecure"
       - "traefik.http.routers.d4ia-images.tls=true"
       - "traefik.http.routers.d4ia-images.tls.certresolver=mytlschallenge"
       - "traefik.http.routers.d4ia-images.priority=90"
       - "traefik.http.routers.d4ia-images.service=d4ia-api"
+
+      # IMAGES por IP (HTTPS sin certificado automático)
+      - "traefik.http.routers.d4ia-images-ip.rule=Host(`148.230.117.58`) && PathPrefix(`/images`)"
+      - "traefik.http.routers.d4ia-images-ip.entrypoints=websecure"
+      - "traefik.http.routers.d4ia-images-ip.tls=true"
+      - "traefik.http.routers.d4ia-images-ip.priority=90"
+      - "traefik.http.routers.d4ia-images-ip.service=d4ia-api"
 
   # Servidor web estático
   web:
@@ -58,13 +72,19 @@ services:
       - "traefik.enable=true"
       - "traefik.docker.network=root_default"
 
-      # WEB (HTTPS) - Acepta tanto dominio como IP
-      - "traefik.http.routers.d4ia-web.rule=Host(`olidart.store`) || Host(`www.olidart.store`) || Host(`148.230.117.58`)"
+      # WEB (HTTPS) - Solo dominios con SSL
+      - "traefik.http.routers.d4ia-web.rule=Host(`olidart.store`) || Host(`www.olidart.store`)"
       - "traefik.http.routers.d4ia-web.entrypoints=websecure"
       - "traefik.http.routers.d4ia-web.tls=true"
       - "traefik.http.routers.d4ia-web.tls.certresolver=mytlschallenge"
       - "traefik.http.routers.d4ia-web.priority=1"
       - "traefik.http.services.d4ia-web.loadbalancer.server.port=80"
+
+      # WEB por IP (HTTPS sin certificado automático)
+      - "traefik.http.routers.d4ia-web-ip.rule=Host(`148.230.117.58`)"
+      - "traefik.http.routers.d4ia-web-ip.entrypoints=websecure"
+      - "traefik.http.routers.d4ia-web-ip.tls=true"
+      - "traefik.http.routers.d4ia-web-ip.priority=1"
 
 networks:
   traefik:
