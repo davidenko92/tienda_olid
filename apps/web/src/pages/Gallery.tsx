@@ -40,27 +40,14 @@ const Gallery = () => {
       });
   }, []);
 
-  // Función para categorizar técnica basándose en palabras clave
-  const categorizeTechnique = (techniqueText: string): string => {
-    const normalized = techniqueText.toUpperCase();
-
-    if (normalized.includes('ACUARELA')) return 'Acuarela';
-    if (normalized.includes('OLEO') || normalized.includes('ÓLEO')) return 'Óleo';
-    if (normalized.includes('ACRILICO') || normalized.includes('ACRÍLICO')) return 'Acrílico';
-    if (normalized.includes('MIXTA')) return 'Técnica mixta';
-
-    // Si no coincide con ninguna categoría, usar el texto original
-    return techniqueText;
-  };
-
-  // Agrupar productos por técnica categorizada
+  // Agrupar productos directamente por cd_technique (ya tiene valores simples en la BD)
   const productsByTechnique = products.reduce((acc, product) => {
-    const category = categorizeTechnique(product.cd_technique);
+    const technique = product.cd_technique;
 
-    if (!acc[category]) {
-      acc[category] = [];
+    if (!acc[technique]) {
+      acc[technique] = [];
     }
-    acc[category].push(product);
+    acc[technique].push(product);
 
     return acc;
   }, {} as Record<string, Product[]>);
