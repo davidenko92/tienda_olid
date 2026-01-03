@@ -3,6 +3,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { Product } from '../types';
 
 // Usar URLs relativas para que funcione con cualquier dominio/IP
+// v2.0 - Cache busting
 const API_BASE_URL = '/api';
 
 export default function ProductDetail() {
@@ -17,7 +18,7 @@ export default function ProductDetail() {
     if (slug) {
       fetchProduct(slug);
     }
-  }, [slug]);
+  }, [slug]); // Updated cache
 
   const fetchProduct = async (productSlug: string) => {
     try {
@@ -132,16 +133,14 @@ export default function ProductDetail() {
           fontSize: '17px',
           lineHeight: '1.8',
           color: '#333',
-          fontWeight: '400'
+          fontWeight: '400',
+          whiteSpace: 'pre-line'
         }}>
           <div style={{ marginBottom: '0.5rem' }}>
             {product.cd_name}
           </div>
           <div style={{ marginBottom: '0.5rem' }}>
-            {product.cd_technique}
-          </div>
-          <div style={{ marginBottom: '0.5rem' }}>
-            {product.cd_width_cm} × {product.cd_height_cm} cm
+            {product.ts_description}
           </div>
           <div style={{ marginTop: '1.5rem', fontSize: '18px' }}>
             {product.nu_price} €
