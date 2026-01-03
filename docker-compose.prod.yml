@@ -26,8 +26,8 @@ services:
       - "traefik.enable=true"
       - "traefik.docker.network=root_default"
 
-      # API (HTTPS)
-      - "traefik.http.routers.d4ia-api.rule=Host(`olid.store`) && PathPrefix(`/api`)"
+      # API (HTTPS) - Acepta tanto dominio como IP
+      - "traefik.http.routers.d4ia-api.rule=(Host(`olid.store`) || Host(`www.olid.store`) || Host(`148.230.117.58`)) && PathPrefix(`/api`)"
       - "traefik.http.routers.d4ia-api.entrypoints=websecure"
       - "traefik.http.routers.d4ia-api.tls=true"
       - "traefik.http.routers.d4ia-api.tls.certresolver=mytlschallenge"
@@ -37,7 +37,7 @@ services:
       - "traefik.http.routers.d4ia-api.middlewares=d4ia-api-stripprefix"
 
       # IMAGES (HTTPS) -> mismo servicio (api) pero sin strip
-      - "traefik.http.routers.d4ia-images.rule=Host(`olid.store`) && PathPrefix(`/images`)"
+      - "traefik.http.routers.d4ia-images.rule=(Host(`olid.store`) || Host(`www.olid.store`) || Host(`148.230.117.58`)) && PathPrefix(`/images`)"
       - "traefik.http.routers.d4ia-images.entrypoints=websecure"
       - "traefik.http.routers.d4ia-images.tls=true"
       - "traefik.http.routers.d4ia-images.tls.certresolver=mytlschallenge"
@@ -58,8 +58,8 @@ services:
       - "traefik.enable=true"
       - "traefik.docker.network=root_default"
 
-      # WEB (HTTPS)
-      - "traefik.http.routers.d4ia-web.rule=Host(`olid.store`) || Host(`www.olid.store`)"
+      # WEB (HTTPS) - Acepta tanto dominio como IP
+      - "traefik.http.routers.d4ia-web.rule=Host(`olid.store`) || Host(`www.olid.store`) || Host(`148.230.117.58`)"
       - "traefik.http.routers.d4ia-web.entrypoints=websecure"
       - "traefik.http.routers.d4ia-web.tls=true"
       - "traefik.http.routers.d4ia-web.tls.certresolver=mytlschallenge"
