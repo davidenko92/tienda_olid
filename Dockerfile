@@ -9,7 +9,7 @@ COPY package*.json ./
 
 # Instalar dependencias
 WORKDIR /app/apps/api
-RUN npm install
+RUN npm install && npm install pino-pretty
 
 # Copiar código fuente
 COPY apps/api ./
