@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+// Usar URLs relativas para que funcione con cualquier dominio/IP
+const API_URL = '/api';
 
 interface Product {
   id_product: number;

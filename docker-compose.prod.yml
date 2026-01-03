@@ -12,7 +12,7 @@ services:
       - DATABASE_URL=${DATABASE_URL}
       - PORT=3000
       - IMAGES_PATH=/images
-      - FRONTEND_URL=https://olid.store
+      - FRONTEND_URL=https://olidart.store
       - NODE_ENV=production
       - EMAIL_USER=${EMAIL_USER}
       - EMAIL_PASS=${EMAIL_PASS}
@@ -27,7 +27,7 @@ services:
       - "traefik.docker.network=root_default"
 
       # API (HTTPS) - Acepta tanto dominio como IP
-      - "traefik.http.routers.d4ia-api.rule=(Host(`olid.store`) || Host(`www.olid.store`) || Host(`148.230.117.58`)) && PathPrefix(`/api`)"
+      - "traefik.http.routers.d4ia-api.rule=(Host(`olidart.store`) || Host(`www.olidart.store`) || Host(`148.230.117.58`)) && PathPrefix(`/api`)"
       - "traefik.http.routers.d4ia-api.entrypoints=websecure"
       - "traefik.http.routers.d4ia-api.tls=true"
       - "traefik.http.routers.d4ia-api.tls.certresolver=mytlschallenge"
@@ -37,7 +37,7 @@ services:
       - "traefik.http.routers.d4ia-api.middlewares=d4ia-api-stripprefix"
 
       # IMAGES (HTTPS) -> mismo servicio (api) pero sin strip
-      - "traefik.http.routers.d4ia-images.rule=(Host(`olid.store`) || Host(`www.olid.store`) || Host(`148.230.117.58`)) && PathPrefix(`/images`)"
+      - "traefik.http.routers.d4ia-images.rule=(Host(`olidart.store`) || Host(`www.olidart.store`) || Host(`148.230.117.58`)) && PathPrefix(`/images`)"
       - "traefik.http.routers.d4ia-images.entrypoints=websecure"
       - "traefik.http.routers.d4ia-images.tls=true"
       - "traefik.http.routers.d4ia-images.tls.certresolver=mytlschallenge"
@@ -59,7 +59,7 @@ services:
       - "traefik.docker.network=root_default"
 
       # WEB (HTTPS) - Acepta tanto dominio como IP
-      - "traefik.http.routers.d4ia-web.rule=Host(`olid.store`) || Host(`www.olid.store`) || Host(`148.230.117.58`)"
+      - "traefik.http.routers.d4ia-web.rule=Host(`olidart.store`) || Host(`www.olidart.store`) || Host(`148.230.117.58`)"
       - "traefik.http.routers.d4ia-web.entrypoints=websecure"
       - "traefik.http.routers.d4ia-web.tls=true"
       - "traefik.http.routers.d4ia-web.tls.certresolver=mytlschallenge"

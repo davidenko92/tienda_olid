@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { Product } from '../types';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+// Usar URLs relativas para que funcione con cualquier dominio/IP
+const API_BASE_URL = '/api';
 
 export default function ProductDetail() {
   const { slug } = useParams<{ slug: string }>();

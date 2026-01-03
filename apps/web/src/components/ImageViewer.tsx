@@ -20,7 +20,8 @@ interface ImageViewerProps {
   onClose: () => void;
 }
 
-const IMAGES_URL = import.meta.env.VITE_IMAGES_URL || 'http://localhost:3000';
+// Usar URLs relativas para que funcione con cualquier dominio/IP
+const IMAGES_URL = '';
 
 export default function ImageViewer({ products, currentIndex, onClose }: ImageViewerProps) {
   const [index, setIndex] = useState(currentIndex);

@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import ImageViewer from '../components/ImageViewer';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
-const IMAGES_URL = import.meta.env.VITE_IMAGES_URL || 'http://localhost:3000';
+// Usar URLs relativas para que funcione con cualquier dominio/IP
+const API_URL = '/api';
+const IMAGES_URL = '';
 
 interface Product {
   id_product: number;

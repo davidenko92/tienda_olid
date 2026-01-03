@@ -5,7 +5,8 @@ interface ProductCardProps {
   product: Product;
 }
 
-const IMAGES_BASE_URL = import.meta.env.VITE_IMAGES_URL || 'http://localhost:3000';
+// Usar URLs relativas para que funcione con cualquier dominio/IP
+const IMAGES_BASE_URL = '';
 
 export default function ProductCard({ product }: ProductCardProps) {
   return (
