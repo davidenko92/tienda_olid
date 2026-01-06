@@ -62,11 +62,11 @@ const Contact = () => {
             <div className="sans-text" style={{ fontSize: '1rem', color: '#555', lineHeight: 2 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem' }}>
                 <Mail size={20} color="#e74c3c" />
-                <span>contacto@olidart.com</span>
+                <span>artolidadh@gmail.com</span>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                 <Instagram size={20} color="#e74c3c" />
-                <span>@olid.art</span>
+                <span>@olid_623</span>
               </div>
             </div>
           </div>

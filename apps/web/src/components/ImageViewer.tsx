@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { X, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
+import { X, ChevronLeft, ChevronRight, Plus, Minus } from 'lucide-react';
 
 interface Product {
   id_product: number;
@@ -26,11 +26,18 @@ const IMAGES_URL = '';
 export default function ImageViewer({ products, currentIndex, onClose }: ImageViewerProps) {
   const [index, setIndex] = useState(currentIndex);
   const [imageLoaded, setImageLoaded] = useState(false);
+  const [zoom, setZoom] = useState(1);
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+  const imageContainerRef = useRef<HTMLDivElement>(null);
   const product = products[index];
 
-  // Reset image loaded state when index changes
+  // Reset image loaded state and zoom when index changes
   useEffect(() => {
     setImageLoaded(false);
+    setZoom(1);
+    setPosition({ x: 0, y: 0 });
   }, [index]);
 
   // Keyboard navigation
@@ -42,12 +49,16 @@ export default function ImageViewer({ products, currentIndex, onClose }: ImageVi
         goToPrevious();
       } else if (e.key === 'ArrowRight') {
         goToNext();
+      } else if (e.key === '+' || e.key === '=') {
+        zoomIn();
+      } else if (e.key === '-') {
+        zoomOut();
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [index]);
+  }, [index, zoom]);
 
   const goToPrevious = () => {
     setIndex((prev) => (prev === 0 ? products.length - 1 : prev - 1));
@@ -55,6 +66,44 @@ export default function ImageViewer({ products, currentIndex, onClose }: ImageVi
 
   const goToNext = () => {
     setIndex((prev) => (prev === products.length - 1 ? 0 : prev + 1));
+  };
+
+  const zoomIn = () => {
+    setZoom((prev) => Math.min(prev + 0.5, 4));
+  };
+
+  const zoomOut = () => {
+    setZoom((prev) => {
+      const newZoom = Math.max(prev - 0.5, 1);
+      if (newZoom === 1) {
+        setPosition({ x: 0, y: 0 });
+      }
+      return newZoom;
+    });
+  };
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if (zoom > 1) {
+      setIsDragging(true);
+      setDragStart({ x: e.clientX - position.x, y: e.clientY - position.y });
+    }
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (isDragging && zoom > 1) {
+      setPosition({
+        x: e.clientX - dragStart.x,
+        y: e.clientY - dragStart.y
+      });
+    }
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  };
+
+  const handleMouseLeave = () => {
+    setIsDragging(false);
   };
 
   return (
@@ -193,12 +242,19 @@ export default function ImageViewer({ products, currentIndex, onClose }: ImageVi
       >
         {/* Image */}
         <div
+          ref={imageContainerRef}
+          onMouseDown={handleMouseDown}
+          onMouseMove={handleMouseMove}
+          onMouseUp={handleMouseUp}
+          onMouseLeave={handleMouseLeave}
           style={{
             width: '100%',
             maxHeight: '70vh',
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'center'
+            justifyContent: 'center',
+            overflow: 'hidden',
+            cursor: zoom > 1 ? (isDragging ? 'grabbing' : 'grab') : 'default'
           }}
         >
           {!imageLoaded && (
@@ -207,14 +263,83 @@ export default function ImageViewer({ products, currentIndex, onClose }: ImageVi
           <img
             src={`${IMAGES_URL}/${product.cd_image_full}`}
             alt={product.cd_name}
+            draggable={false}
             style={{
               maxWidth: '100%',
               maxHeight: '70vh',
               objectFit: 'contain',
-              display: imageLoaded ? 'block' : 'none'
+              display: imageLoaded ? 'block' : 'none',
+              transform: `scale(${zoom}) translate(${position.x / zoom}px, ${position.y / zoom}px)`,
+              transition: isDragging ? 'none' : 'transform 0.2s ease-out',
+              userSelect: 'none'
             }}
             onLoad={() => setImageLoaded(true)}
           />
+        </div>
+
+        {/* Zoom controls */}
+        <div
+          style={{
+            display: 'flex',
+            gap: '0.5rem',
+            marginBottom: '0.5rem'
+          }}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <button
+            onClick={zoomOut}
+            disabled={zoom <= 1}
+            style={{
+              background: 'white',
+              border: '1px solid #ddd',
+              borderRadius: '50%',
+              width: '40px',
+              height: '40px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: zoom <= 1 ? 'not-allowed' : 'pointer',
+              opacity: zoom <= 1 ? 0.5 : 1,
+              transition: 'all 0.2s'
+            }}
+          >
+            <Minus size={18} color="#333" />
+          </button>
+          <div
+            style={{
+              background: 'white',
+              border: '1px solid #ddd',
+              borderRadius: '20px',
+              padding: '0 1rem',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: '14px',
+              color: '#555',
+              minWidth: '55px'
+            }}
+          >
+            {Math.round(zoom * 100)}%
+          </div>
+          <button
+            onClick={zoomIn}
+            disabled={zoom >= 4}
+            style={{
+              background: 'white',
+              border: '1px solid #ddd',
+              borderRadius: '50%',
+              width: '40px',
+              height: '40px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: zoom >= 4 ? 'not-allowed' : 'pointer',
+              opacity: zoom >= 4 ? 0.5 : 1,
+              transition: 'all 0.2s'
+            }}
+          >
+            <Plus size={18} color="#333" />
+          </button>
         </div>
 
         {/* Artwork details */}
@@ -231,7 +356,7 @@ export default function ImageViewer({ products, currentIndex, onClose }: ImageVi
           <div style={{ marginBottom: '0.5rem', fontSize: '19px', fontWeight: '500' }}>
             {product.cd_name}
           </div>
-          <div style={{ marginBottom: '0.5rem' }}>{product.cd_technique}</div>
+          <div style={{ marginBottom: '0.5rem', whiteSpace: 'pre-line' }}>{product.ts_description}</div>
           <div style={{ marginBottom: '0.5rem' }}>
             {product.cd_width_cm} × {product.cd_height_cm} cm
           </div>

@@ -1,5 +1,4 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Search, Heart, ShoppingCart } from 'lucide-react';
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const location = useLocation();
@@ -44,11 +43,6 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
               </Link>
             ))}
           </nav>
-          <div style={{ display: 'flex', gap: '1.2rem', alignItems: 'center' }}>
-            <Search size={20} color="#555" style={{ cursor: 'pointer' }} />
-            <Heart size={20} color="#555" style={{ cursor: 'pointer' }} />
-            <ShoppingCart size={20} color="#555" style={{ cursor: 'pointer' }} />
-          </div>
         </div>
       </header>
 
