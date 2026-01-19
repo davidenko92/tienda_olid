@@ -59,6 +59,7 @@ const generateThumbnail = async (filename) => {
 
     // Generar thumbnail con Sharp
     await sharp(inputPath)
+      .rotate() // Rotar automáticamente según metadatos EXIF
       .resize(THUMB_WIDTH, null, {
         withoutEnlargement: true, // No agrandar imágenes pequeñas
         fit: 'inside'

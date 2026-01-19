@@ -69,7 +69,13 @@ fastify.get<{
 }>('/products', async (request, reply) => {
   try {
     const result = await query(
-      'SELECT * FROM products ORDER BY fh_created_at DESC'
+      `SELECT * FROM products
+       ORDER BY
+         COALESCE(
+           CAST(NULLIF(substring(cd_slug from '[0-9]+$'), '') AS INTEGER),
+           999999
+         ) ASC,
+         cd_name ASC`
     );
 
     return result.rows;
