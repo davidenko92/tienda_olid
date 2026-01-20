@@ -8,7 +8,9 @@
     "generate-thumbs": "node generate-thumbnails.js"
   },
   "dependencies": {
+    "dotenv": "^17.2.3",
     "image-size": "^1.1.1",
+    "pg": "^8.17.1",
     "sharp": "^0.33.5"
   }
 }

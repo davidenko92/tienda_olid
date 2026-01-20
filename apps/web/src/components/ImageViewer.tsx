@@ -23,6 +23,15 @@ interface ImageViewerProps {
 // Usar URLs relativas para que funcione con cualquier dominio/IP
 const IMAGES_URL = '';
 
+// Descripciones detalladas por técnica
+const TECHNIQUE_DESCRIPTIONS: Record<string, string> = {
+  'Acuarela': 'Acuarela sobre papel de 300 g.',
+  'Óleo': 'Óleo sobre lienzo.',
+  'Acrílico': 'Acrílico sobre lienzo.',
+  'Técnica mixta': 'Técnica mixta: acuarela, tinta y rotulador sobre cartulina de 300 g.',
+  'Tinta china': 'Tinta china sobre papel.'
+};
+
 export default function ImageViewer({ products, currentIndex, onClose }: ImageViewerProps) {
   const [index, setIndex] = useState(currentIndex);
   const [imageLoaded, setImageLoaded] = useState(false);
@@ -353,15 +362,43 @@ export default function ImageViewer({ products, currentIndex, onClose }: ImageVi
             fontWeight: '400'
           }}
         >
-          <div style={{ marginBottom: '0.5rem', fontSize: '19px', fontWeight: '500' }}>
+          <div style={{ marginBottom: '0.75rem', fontSize: '19px', fontWeight: '500' }}>
             {product.cd_name}
           </div>
-          <div style={{ marginBottom: '0.5rem', whiteSpace: 'pre-line' }}>{product.ts_description}</div>
-          <div style={{ marginBottom: '0.5rem' }}>
-            {product.cd_width_cm} × {product.cd_height_cm} cm
+          <div style={{ marginBottom: '0.75rem' }}>
+            {TECHNIQUE_DESCRIPTIONS[product.cd_technique] || product.cd_technique}
           </div>
-          <div style={{ marginTop: '1rem', fontSize: '20px', color: '#e74c3c' }}>
-            {product.nu_price} €
+          <div style={{ marginBottom: '0.75rem', textTransform: 'uppercase', fontSize: '15px' }}>
+            Medidas: {product.cd_width_cm} × {product.cd_height_cm} cm
+          </div>
+          {/* Opciones de precio */}
+          <div style={{ marginTop: '1.5rem', display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+            <div style={{
+              padding: '0.75rem 1.5rem',
+              border: '2px solid #e74c3c',
+              borderRadius: '8px',
+              background: '#fff'
+            }}>
+              <div style={{ fontSize: '12px', color: '#666', marginBottom: '0.25rem' }}>
+                Obra Original
+              </div>
+              <div style={{ fontSize: '20px', color: '#e74c3c', fontWeight: '600' }}>
+                150 €
+              </div>
+            </div>
+            <div style={{
+              padding: '0.75rem 1.5rem',
+              border: '2px solid #3498db',
+              borderRadius: '8px',
+              background: '#fff'
+            }}>
+              <div style={{ fontSize: '12px', color: '#666', marginBottom: '0.25rem' }}>
+                Copia
+              </div>
+              <div style={{ fontSize: '20px', color: '#3498db', fontWeight: '600' }}>
+                20 €
+              </div>
+            </div>
           </div>
           {product.cd_status !== 'disponible' && (
             <div

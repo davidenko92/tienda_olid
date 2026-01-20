@@ -6,6 +6,15 @@ import { Product } from '../types';
 // v2.0 - Cache busting
 const API_BASE_URL = '/api';
 
+// Descripciones detalladas por técnica
+const TECHNIQUE_DESCRIPTIONS: Record<string, string> = {
+  'Acuarela': 'Acuarela sobre papel de 300 g.',
+  'Óleo': 'Óleo sobre lienzo.',
+  'Acrílico': 'Acrílico sobre lienzo.',
+  'Técnica mixta': 'Técnica mixta: acuarela, tinta y rotulador sobre cartulina de 300 g.',
+  'Tinta china': 'Tinta china sobre papel.'
+};
+
 export default function ProductDetail() {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
@@ -133,17 +142,57 @@ export default function ProductDetail() {
           fontSize: '17px',
           lineHeight: '1.8',
           color: '#333',
-          fontWeight: '400',
-          whiteSpace: 'pre-line'
+          fontWeight: '400'
         }}>
-          <div style={{ marginBottom: '0.5rem' }}>
+          <div style={{ marginBottom: '0.75rem', fontSize: '19px', fontWeight: '500' }}>
             {product.cd_name}
           </div>
-          <div style={{ marginBottom: '0.5rem' }}>
-            {product.ts_description}
+          <div style={{ marginBottom: '0.75rem' }}>
+            {TECHNIQUE_DESCRIPTIONS[product.cd_technique] || product.cd_technique}
           </div>
-          <div style={{ marginTop: '1.5rem', fontSize: '18px' }}>
-            {product.nu_price} €
+          <div style={{ marginBottom: '0.75rem', textTransform: 'uppercase', fontSize: '15px' }}>
+            Medidas: {product.cd_width_cm} × {product.cd_height_cm} cm
+          </div>
+          {/* Opciones de precio */}
+          <div style={{ marginTop: '2rem' }}>
+            <div style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '1rem',
+              alignItems: 'center'
+            }}>
+              {/* Precio obra original */}
+              <div style={{
+                padding: '1rem 2rem',
+                border: '2px solid #e74c3c',
+                borderRadius: '8px',
+                background: '#fff',
+                minWidth: '250px'
+              }}>
+                <div style={{ fontSize: '14px', color: '#666', marginBottom: '0.25rem' }}>
+                  Obra Original
+                </div>
+                <div style={{ fontSize: '24px', color: '#e74c3c', fontWeight: '600' }}>
+                  150 €
+                </div>
+              </div>
+
+              {/* Precio copia */}
+              <div style={{
+                padding: '1rem 2rem',
+                border: '2px solid #3498db',
+                borderRadius: '8px',
+                background: '#fff',
+                minWidth: '250px'
+              }}>
+                <div style={{ fontSize: '14px', color: '#666', marginBottom: '0.25rem' }}>
+                  Copia del Original
+                </div>
+                <div style={{ fontSize: '24px', color: '#3498db', fontWeight: '600' }}>
+                  20 €
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
